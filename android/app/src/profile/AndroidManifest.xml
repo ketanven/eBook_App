@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="your.package.name">
+
+    <!-- INTERNET permission is required for development. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- CAMERA permission for accessing the camera. -->
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE permissions for accessing the gallery. -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Add other permissions as needed for your app. -->
+
+    <application>
+        <!-- Your application configuration goes here. -->
+    </application>
+</manifest>
