@@ -27,10 +27,10 @@ class BookCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.orange.withOpacity(0.3),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 2),
+                      color: Color.fromARGB(255, 114, 45, 187).withOpacity(0.3),
+                      spreadRadius: 3,
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
                     )
                   ],
                 ),

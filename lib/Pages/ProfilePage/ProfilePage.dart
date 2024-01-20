@@ -86,7 +86,7 @@ class ProfilePage extends StatelessWidget {
                         ),
                         SizedBox(height: 60),
                         Container(
-                          padding: EdgeInsets.all(7),
+                          padding: EdgeInsets.all(1),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             gradient: LinearGradient(
@@ -107,7 +107,7 @@ class ProfilePage extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(100),
                               child: Image.asset(
-                                "Assets/Images/Python.jpg",
+                                "Assets/Images/user2.png",
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -147,7 +147,8 @@ class ProfilePage extends StatelessWidget {
                   Row(
                     children: [
                       Text("Your Books",
-                          style: Theme.of(context).textTheme.labelLarge)
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w500))
                     ],
                   ),
                   SizedBox(height: 20),
