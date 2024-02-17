@@ -5,10 +5,12 @@ class BookTile extends StatelessWidget {
   final String coverUrl;
   final String author;
   final String rating;
-  final String category;
-  final int pages;
   final int numberofRating;
-  final VoidCallback ontap;
+  final int pages;
+  final String category;
+  final String bookId;
+  final Null Function() onTap; // Changed the name to ontap
+  final Null Function() ontap; // Changed the name to ontap
 
   const BookTile({
     Key? key,
@@ -17,15 +19,17 @@ class BookTile extends StatelessWidget {
     required this.author,
     required this.rating,
     required this.numberofRating,
-    required this.ontap,
-    required this.category,
     required this.pages,
+    required this.category,
+    required this.bookId,
+    required this.ontap,
+    required this.onTap, // Updated the name to ontap
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: ontap,
+      onTap: onTap,
       child: Container(
         width: 185,
         padding: EdgeInsets.all(10),
@@ -62,7 +66,7 @@ class BookTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  rating,
+                  rating as String,
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 Icon(

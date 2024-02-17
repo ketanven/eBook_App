@@ -10,7 +10,7 @@ class SplacePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SplaceController splaceController = Get.put(SplaceController());
+    SplashController splaceController = Get.put(SplashController());
     BookController bookController = Get.put(BookController());
     return Scaffold(
       body: Center(

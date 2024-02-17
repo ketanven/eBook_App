@@ -61,11 +61,9 @@ class WelcomePage extends StatelessWidget {
                     Get.offAll(LoginPage());
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 68),
+                    foregroundColor: Colors.white, padding: EdgeInsets.symmetric(vertical: 15, horizontal: 68), backgroundColor: const Color.fromARGB(255, 208, 33, 243),
                     textStyle:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                    primary: const Color.fromARGB(255, 208, 33, 243),
-                    onPrimary: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -80,11 +78,9 @@ class WelcomePage extends StatelessWidget {
                     Get.offAll(Register());
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+                    foregroundColor: Colors.white, padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50), backgroundColor: const Color.fromARGB(255, 208, 33, 243),
                     textStyle:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                    primary: const Color.fromARGB(255, 208, 33, 243),
-                    onPrimary: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

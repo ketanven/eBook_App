@@ -6,14 +6,18 @@ import 'package:ebook_app/models/BookModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:uuid/uuid.dart';
 
 class BookController extends GetxController {
-  // Text controllers for various input fields
+  static BookController get to => Get.find(); // Define the static getter
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   TextEditingController title = TextEditingController();
   TextEditingController des = TextEditingController();
   TextEditingController auth = TextEditingController();
@@ -30,6 +34,8 @@ class BookController extends GetxController {
 
   final fAuth = FirebaseAuth.instance;
   RxString selectedBookTitle = ''.obs;
+  RxList<BookModel> _books = <BookModel>[].obs;
+  List<BookModel> get books => _books;
 
   RxString imageUrl = "".obs;
   RxString pdfUrl = "".obs;
@@ -39,16 +45,24 @@ class BookController extends GetxController {
   RxBool isImageUploading = false.obs;
   RxBool isPdfUploading = false.obs;
   RxBool isPostUploading = true.obs;
-  // RxList<BookModel> bookData = <BookModel>[].obs;
+  RxList<BookModel> bookData = <BookModel>[].obs;
   Rx<BookModel?> selectedBook = Rx<BookModel?>(null);
 
-  var bookData = RxList<BookModel>();
   var currentUserBooks = RxList<BookModel>();
 
   @override
   void onInit() {
     super.onInit();
     getAllBooks();
+    // selectedBook.value = initialSelectedBook; // Initialize with some initial value if needed
+  }
+
+  List<BookModel> getBooksByCategory(String category, languages) {
+    return bookData.where((book) => book.category == category).toList();
+  }
+
+  void setBooks(List<BookModel> books) {
+    _books.assignAll(books);
   }
 
   void setSelectedBook(BookModel book) {
@@ -84,10 +98,9 @@ class BookController extends GetxController {
     if (image != null) {
       uploadImageToFirebase(File(image.path));
       isImageUploaded = true;
+      Get.snackbar('Done!', 'Cover image selected');
     } else {
-      // Display a snackbar if the image is not selected
       Get.snackbar('Error', 'Cover image not selected');
-      // Stop the circular progress bar
       isImageUploading.value = false;
     }
   }
@@ -101,6 +114,7 @@ class BookController extends GetxController {
     imageUrl.value = downloadURL;
     print("Download URL: $downloadURL");
     isImageUploading.value = false;
+    Get.snackbar('Success', 'Cover image uploaded successfully');
   }
 
   void createBook() async {
@@ -113,11 +127,12 @@ class BookController extends GetxController {
         coverUrl: imageUrl.value,
         bookurl: pdfUrl.value,
         author: auth.text,
-        // author1: auth2.text,
         aboutAuthor: aboutAuth.text,
         pages: int.parse(pages.text),
         language: language.text,
         rating: "",
+        category: '',
+        numberofRating: null,
       );
 
       await db.collection("Books").add(newBook.toJson());
@@ -136,6 +151,7 @@ class BookController extends GetxController {
 
       imageUrl.value = "";
       pdfUrl.value = "";
+      Get.snackbar('Success', 'Book uploaded successfully');
 
       print("Book added to the db");
     } catch (error) {
@@ -166,6 +182,7 @@ class BookController extends GetxController {
         final downloadURL = await response.ref.getDownloadURL();
         pdfUrl.value = downloadURL;
         print(downloadURL);
+        Get.snackbar('Success', 'PDF uploaded successfully');
       } else {
         print("File does not exist");
       }
@@ -181,5 +198,41 @@ class BookController extends GetxController {
         .doc(fAuth.currentUser!.uid)
         .collection("Books")
         .add(book.toJson());
+  }
+
+  void deleteBook(BookModel book, String coverUrl, String pdfUrl) async {
+    if (book.id != null && book.id!.isNotEmpty) {
+      try {
+        // Delete the book document from Firestore
+        await FirebaseFirestore.instance
+            .collection('Books')
+            .doc(book.id)
+            .delete();
+
+        // Delete the cover image from Firebase Storage if the cover URL is not null
+        if (book.coverUrl != null) {
+          await FirebaseStorage.instance.refFromURL(book.coverUrl!).delete();
+        }
+
+        // Delete the PDF from Firebase Storage if the PDF URL is not null
+        if (book.bookurl != null) {
+          await FirebaseStorage.instance.refFromURL(book.bookurl!).delete();
+        }
+
+        // Show a snackbar or toast to indicate successful deletion
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          SnackBar(content: Text('Book deleted successfully')),
+        );
+      } catch (e) {
+        print("Error deleting book: $e");
+        // Handle error
+        // Show a snackbar or toast to indicate deletion failure
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          SnackBar(content: Text('Failed to delete book')),
+        );
+      }
+    } else {
+      print('Invalid book ID');
+    }
   }
 }

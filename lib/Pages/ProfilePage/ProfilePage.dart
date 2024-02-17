@@ -1,22 +1,104 @@
+import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ebook_app/Components/BackButton.dart';
 import 'package:ebook_app/Components/BookTile.dart';
 import 'package:ebook_app/Controller/BookController.dart';
 import 'package:ebook_app/Pages/AddNewBook/AddNewBook.dart';
 import 'package:ebook_app/Pages/WelcomePage.dart';
-import 'package:ebook_app/models/Data.dart';
 import 'package:ebook_app/utils/color_utils.dart';
+import 'package:ebook_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage(
+      {Key? key,
+      required Null Function(dynamic imageUrl, dynamic imageBytes)
+          onUpdateImage,
+      String? imageUrl,
+      Uint8List? imageBytes})
+      : super(key: key);
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final BookController bookController = Get.put(BookController());
+  ImagePicker _imagePicker = ImagePicker();
+  String? _imageUrl;
+  Uint8List? _image;
+  String? _userEmail; // Add _userEmail variable here
+  late User _user; // Declare user variable here
+
+  @override
+  void initState() {
+    super.initState();
+    _user = FirebaseAuth.instance.currentUser!;
+    loadProfilePicture();
+  }
+
+  // Function to load the user's profile picture from Firestore
+  Future<void> loadProfilePicture() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_user.uid)
+        .get();
+    if (snapshot.exists) {
+      Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+      if (data != null) {
+        setState(() {
+          _imageUrl = data['profilePicUrl'];
+          _userEmail = _user.email;
+        });
+      }
+    }
+  }
+
+  // Function to select and upload image
+  Future<void> selectImage() async {
+    final pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      Uint8List? imageBytes = await pickedFile.readAsBytes();
+
+      setState(() {
+        _image = imageBytes;
+      });
+
+      // Upload image to Firebase Storage
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('profile_pictures')
+          .child('${_user.uid}.jpg');
+      UploadTask uploadTask = ref.putFile(File(pickedFile.path));
+      TaskSnapshot storageTaskSnapshot =
+          await uploadTask.whenComplete(() => null);
+      String url = await storageTaskSnapshot.ref.getDownloadURL();
+
+      // Save image URL to Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_user.uid)
+          .set({'profilePicUrl': url}, SetOptions(merge: true));
+
+      // Set the profile picture URL in the state
+      setState(() {
+        _imageUrl = url;
+        _userEmail = _user.email;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    BookController bookController = Get.put(BookController());
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -24,7 +106,6 @@ class ProfilePage extends StatelessWidget {
         },
         child: Icon(
           Icons.add,
-          // color: Theme.of(context).colorScheme.background,
         ),
       ),
       body: SingleChildScrollView(
@@ -36,7 +117,6 @@ class ProfilePage extends StatelessWidget {
                 gradient: RadialGradient(colors: [
                   hexStringToColor("5E61F4"),
                   hexStringToColor("5E61F4"),
-                  // hexStringToColor("CB2B93"),
                   hexStringToColor("9546C4")
                 ], center: Alignment.center),
               ),
@@ -54,7 +134,7 @@ class ProfilePage extends StatelessWidget {
                           children: [
                             MyBackButton(),
                             SizedBox(height: 5),
-                            const Text(
+                            Text(
                               "Profile",
                               style: TextStyle(
                                 fontSize: 24,
@@ -75,7 +155,7 @@ class ProfilePage extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.login,
                                     color: Colors.white,
                                   ),
@@ -85,51 +165,53 @@ class ProfilePage extends StatelessWidget {
                           ],
                         ),
                         SizedBox(height: 60),
-                        Container(
-                          padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            gradient: LinearGradient(
-                              colors: [
-                                hexStringToColor("9546C4"),
-                                hexStringToColor("CB2B93"),
-                                // hexStringToColor("5E61F4"),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Stack(
+                              children: [
+                                CircleAvatar(
+                                  radius: 64,
+                                  backgroundImage: _image != null
+                                      ? MemoryImage(_image!)
+                                      : _imageUrl != null
+                                          ? NetworkImage(_imageUrl!)
+                                          : const NetworkImage(
+                                                  'https://cdn-icons-png.flaticon.com/512/3682/3682281.png')
+                                              as ImageProvider<Object>,
+                                ),
+                                Positioned(
+                                  bottom: -10,
+                                  left: 80,
+                                  child: IconButton(
+                                    onPressed: selectImage,
+                                    icon: const Icon(Icons.add_a_photo),
+                                  ),
+                                ),
                               ],
-                              end: Alignment.bottomCenter,
                             ),
-                            border: Border.all(
-                              width: 2,
-                            ),
-                          ),
-                          child: Container(
-                            width: 120,
-                            height: 120,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image.asset(
-                                "Assets/Images/user2.png",
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
+                          ],
                         ),
                         SizedBox(
                           height: 20,
                         ),
                         Text(
-                          "Ketan Pillai",
+                          _userEmail != null
+                              ? _userEmail!.substring(0, 5) +
+                                  Random().nextInt(10).toString()
+                              : "",
                           style: Theme.of(context)
                               .textTheme
-                              .bodyLarge
+                              .bodyText1
                               ?.copyWith(
                                 color: Theme.of(context).colorScheme.background,
                               ),
                         ),
                         Text(
-                          "ketan@gmail.com",
+                          _userEmail ?? "",
                           style: Theme.of(context)
                               .textTheme
-                              .bodyLarge
+                              .bodyText1
                               ?.copyWith(
                                 color: Theme.of(context).colorScheme.background,
                               ),
@@ -141,7 +223,7 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20),
               child: Column(
                 children: [
                   Row(
@@ -152,7 +234,6 @@ class ProfilePage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20),
-                  // Inside your Obx block
                   Obx(
                     () => Column(
                       children: List.generate(
@@ -179,6 +260,8 @@ class ProfilePage extends StatelessWidget {
                                       ontap: () {},
                                       category: e.category.toString(),
                                       pages: e.pages ?? 0,
+                                      onTap: () {},
+                                      bookId: '',
                                     ),
                                   ),
                                 )

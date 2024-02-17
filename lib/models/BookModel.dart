@@ -1,4 +1,4 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookModel {
   String? id;
@@ -15,18 +15,18 @@ class BookModel {
   String? coverUrl;
 
   BookModel(
-      {this.id,
-      this.title,
-      this.description,
-      this.rating,
-      this.pages,
-      this.language,
-      this.author,
-      this.aboutAuthor,
-      this.bookurl,
-      this.category,
-      this.coverUrl,
-      this.numberofRating});
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.rating,
+      required this.pages,
+      required this.language,
+      required this.author,
+      required this.aboutAuthor,
+      required this.bookurl,
+      required this.category,
+      required this.coverUrl,
+      required this.numberofRating});
 
   BookModel.fromJson(Map<String, dynamic> json) {
     if (json["id"] is String) {
@@ -84,5 +84,19 @@ class BookModel {
     _data["category"] = category;
     _data["coverUrl"] = coverUrl;
     return _data;
+  }
+
+  factory BookModel.fromSnapshot(DocumentSnapshot snapshot) {
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    return BookModel(
+      title: data['title'],
+      coverUrl: data['coverUrl'],
+      author: data['author'],
+      rating: data['rating'],
+      numberofRating: data['numberofRating'],
+      pages: data['pages'], id: '', description: '', language: '',
+      aboutAuthor: '', bookurl: '', category: '',
+      // Other properties...
+    );
   }
 }

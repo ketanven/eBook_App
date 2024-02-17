@@ -6,6 +6,7 @@ import 'package:ebook_app/Pages/RegisterPage.dart';
 import 'package:ebook_app/utils/color_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -53,6 +54,11 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Container(
+                          width: 300,
+                          height: 300,
+                          child: Lottie.asset("Assets/Animation/login.json"),
+                        ),
                         SizedBox(
                           height: 30,
                         ),
@@ -152,13 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: 40,
                         ),
-                        MaterialButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0)),
-                          ),
-                          elevation: 5.0,
-                          height: 40,
+                        ElevatedButton(
                           onPressed: () {
                             setState(() {
                               visible = true;
@@ -166,33 +166,34 @@ class _LoginPageState extends State<LoginPage> {
                             signIn(
                                 emailController.text, passwordController.text);
                           },
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: 20,
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color.fromARGB(255, 208, 33, 243),
+                            textStyle: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w900),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 68),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          color: Colors.white,
+                          child: Text("LOGIN",
+                              style: TextStyle(color: Colors.white)),
                         ),
-                        Visibility(
-                          maintainSize: true,
-                          maintainAnimation: true,
-                          maintainState: true,
-                          visible: visible,
-                          child: Container(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
-                          ),
+                        SizedBox(
+                          height: 20,
                         ),
-                        MaterialButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20.0),
-                            ),
-                          ),
-                          elevation: 5.0,
-                          height: 40,
+                        // Visibility(
+                        //   maintainSize: true,
+                        //   maintainAnimation: true,
+                        //   maintainState: true,
+                        //   visible: visible,
+                        //   child: Container(
+                        //     child: CircularProgressIndicator(
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // ),
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
@@ -201,9 +202,18 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             );
                           },
-                          color: Colors.blue[900],
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color.fromARGB(255, 208, 33, 243),
+                            textStyle: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w900),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
                           child: Text(
-                            "Register Now",
+                            "REGISTER",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,

@@ -1,3 +1,8 @@
+import 'package:ebook_app/Pages/AddNewBook/AddNewBook.dart';
+import 'package:ebook_app/Pages/HomePage/BookMangerHomepage.dart';
+import 'package:ebook_app/Pages/HomePage/UserHomePage.dart';
+import 'package:ebook_app/Pages/LoginPage.dart';
+import 'package:ebook_app/Pages/ProfilePage/ProfilePage.dart';
 import 'package:ebook_app/Pages/SplacePage/SplacePage.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:ebook_app/pages/welcomepage.dart';

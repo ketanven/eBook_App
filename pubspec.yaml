@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
     
   cupertino_icons: ^1.0.2
+  share: ^2.0.4
+
   get: ^4.6.6
   firebase_core: ^2.24.2
   firebase_auth: ^4.15.3
@@ -45,6 +47,7 @@ dependencies:
   image_picker: ^1.0.5
   permission_handler: ^11.1.0
   path_provider: ^2.0.9
+  shared_preferences: ^2.2.2
 
 
 dev_dependencies:

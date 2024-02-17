@@ -7,6 +7,15 @@ import 'package:ebook_app/utils/color_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// Define a list of categories
+List<String> categories = [
+  'Programming Languages',
+  'Computer Engineering Books',
+  'Computer Science',
+  'Data Science And Database',
+  'Web Technologies',
+];
+
 class AddNewBook extends StatelessWidget {
   const AddNewBook({Key? key}) : super(key: key);
 
@@ -225,10 +234,24 @@ class AddNewBook extends StatelessWidget {
                     controller: bookController.filepath,
                   ),
                   SizedBox(height: 20),
-                  MyTextFormField(
-                    labelText: "Category",
-                    icon: Icons.category_rounded,
-                    controller: bookController.category,
+                  DropdownButtonFormField<String>(
+                    value: bookController.category.text.isNotEmpty
+                        ? bookController.category.text
+                        : null,
+                    decoration: InputDecoration(
+                      labelText: 'Category',
+                      icon: Icon(Icons.category_rounded),
+                      border: OutlineInputBorder(),
+                    ),
+                    items: categories.map((String category) {
+                      return DropdownMenuItem<String>(
+                        value: category,
+                        child: Text(category),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      bookController.category.text = newValue ?? '';
+                    },
                   ),
                   SizedBox(height: 20),
                   Row(

@@ -1,6 +1,4 @@
-import 'package:ebook_app/Components/BackButton.dart';
 import 'package:ebook_app/Controller/PdfController.dart';
-import 'package:ebook_app/config/color.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,7 +19,7 @@ class BookPage extends StatelessWidget {
         leading: BackButton(color: Theme.of(context).colorScheme.background),
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
-          "Book Title",
+          "E-BOOK",
           style: Theme.of(context)
               .textTheme
               .headlineMedium

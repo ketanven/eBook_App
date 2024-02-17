@@ -257,16 +257,11 @@ class _RegisterState extends State<Register> {
                         SizedBox(
                           height: 20,
                         ),
-                        Row(
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20.0))),
-                              elevation: 5.0,
-                              height: 40,
+                            ElevatedButton(
                               onPressed: () {
                                 CircularProgressIndicator();
                                 Navigator.push(
@@ -280,16 +275,25 @@ class _RegisterState extends State<Register> {
                                 "Login",
                                 style: TextStyle(
                                   fontSize: 20,
+                                  color: Colors.white,
                                 ),
                               ),
-                              color: Colors.white,
+                              style: ElevatedButton.styleFrom(
+                                primary:
+                                    const Color.fromARGB(255, 208, 33, 243),
+                                textStyle: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w900),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 68),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
                             ),
-                            MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20.0))),
-                              elevation: 5.0,
-                              height: 40,
+                            SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton(
                               onPressed: () {
                                 setState(() {
                                   showProgress = true;
@@ -301,9 +305,20 @@ class _RegisterState extends State<Register> {
                                 "Register",
                                 style: TextStyle(
                                   fontSize: 20,
+                                  color: Colors.white,
                                 ),
                               ),
-                              color: Colors.white,
+                              style: ElevatedButton.styleFrom(
+                                primary:
+                                    const Color.fromARGB(255, 208, 33, 243),
+                                textStyle: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w900),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 55),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
                             ),
                           ],
                         ),
